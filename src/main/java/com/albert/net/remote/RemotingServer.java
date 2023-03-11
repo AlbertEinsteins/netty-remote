@@ -1,4 +1,4 @@
 package com.albert.net.remote;
 
-public interface RemoteServer {
+public interface RemotingServer extends RemotingService {
 }

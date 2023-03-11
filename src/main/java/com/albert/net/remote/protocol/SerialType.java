@@ -1,7 +1,8 @@
-package com.albert.net.remote.netty;
+package com.albert.net.remote.protocol;
 
 public enum SerialType {
-    JSON((byte)0);
+    JSON((byte)0),
+    CUSTOME((byte)1);
 
     private final byte code;
     SerialType(byte code) {

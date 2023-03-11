@@ -1,8 +1,15 @@
 package org.example;
 
+import com.albert.net.remote.protocol.JSONSerializer;
+import io.netty.buffer.ByteBuf;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Unit test for simple App.
@@ -33,6 +40,27 @@ public class AppTest
      */
     public void testApp()
     {
-        assertTrue( true );
+//        assertTrue( true );
+//        log4jTester();
+//        byteBufferTester();
+        jsonTester();
+    }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppTest.class);
+    public void log4jTester() {
+        LOGGER.info("asdsd{}", 123);
+    }
+
+    public void byteBufferTester() {
+        byte[] b = "hello world".getBytes(StandardCharsets.UTF_8);
+        ByteBuffer buffer = ByteBuffer.wrap(b);
+        while(buffer.hasRemaining()) {
+            System.out.println(buffer.get());
+        }
+    }
+
+    public void jsonTester() {
+        JsonClassTester t = new JsonClassTester("123", "456");
+        System.out.println(JSONSerializer.toJson(t));
     }
 }

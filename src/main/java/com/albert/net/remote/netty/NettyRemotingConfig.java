@@ -1,2 +1,4 @@
-package com.albert.net.remote.netty;public class NettyRemotingConfig {
+package com.albert.net.remote.netty;
+
+public class NettyRemotingConfig {
 }

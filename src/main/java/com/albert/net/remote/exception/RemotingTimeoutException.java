@@ -1,6 +1,6 @@
 package com.albert.net.remote.exception;
 
-public class RemotingTimeoutException extends Exception {
+public class RemotingTimeoutException extends RemotingException {
     private String addr;
     private long timeoutMillis;
     public RemotingTimeoutException(String addr, long timeoutMillis, Throwable cause) {

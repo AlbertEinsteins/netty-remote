@@ -1,5 +1,8 @@
 package com.albert.net.remote;
 
+import com.albert.net.remote.exception.RemotingConnectException;
+import com.albert.net.remote.exception.RemotingTimeoutException;
+import com.albert.net.remote.exception.RemotingSendRequestException;
 import com.albert.net.remote.netty.RemotingProcessor;
 import com.albert.net.remote.protocol.RemotingMessage;
 
@@ -14,7 +17,8 @@ public interface RemotingClient extends RemotingService {
      * @param timeoutMillis
      * @return
      */
-    RemotingMessage invokeSync(final String addr, final RemotingMessage request, long timeoutMillis);
+    RemotingMessage invokeSync(final String addr, final RemotingMessage request, long timeoutMillis)
+            throws RemotingConnectException, RemotingTimeoutException, RemotingSendRequestException, InterruptedException;
 
     /**
      * 异步执行
@@ -24,7 +28,7 @@ public interface RemotingClient extends RemotingService {
      * @param callback
      */
     void invokeAsync(final String addr, final RemotingMessage request, long timeoutMillis,
-                     InvokeCallback callback);
+                     InvokeCallback callback) throws RemotingConnectException, RemotingTimeoutException, InterruptedException, RemotingSendRequestException;
 
     /**
      * 单向执行
@@ -34,7 +38,7 @@ public interface RemotingClient extends RemotingService {
      * @param callback
      */
     void invokeOneway(final String addr, final RemotingMessage request, long timeoutMillis,
-                      InvokeCallback callback);
+                      InvokeCallback callback) throws RemotingConnectException, InterruptedException, RemotingTimeoutException, RemotingSendRequestException;
 
     void registerProcessor(final int code, final RemotingProcessor processor, ExecutorService executorService);
 

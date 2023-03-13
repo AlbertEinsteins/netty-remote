@@ -115,7 +115,25 @@ public class NettyRemotingClient extends AbstractNettyRemoting
     }
 
     public void shutdown() {
+        try {
+            this.timer.cancel();
+            for (ChannelWrapper wrapper : this.channelTable.values()) {
+                closeChannel(null, wrapper.getChannel());
+            }
+            this.channelTable.clear();
 
+            this.eventLoopGroupWorker.shutdownGracefully();
+            if(this.defaultEventLoopGroup != null) {
+                this.defaultEventLoopGroup.shutdownGracefully();
+            }
+        } catch (Exception e) {
+            LOGGER.error("NettyClient shutdown exception", e);
+        }
+
+
+        if(this.publicExecutorService != null) {
+            this.publicExecutorService.shutdown();
+        }
     }
 
     public void closeChannel(final String addr, final Channel channel) {

@@ -14,7 +14,7 @@ public interface RemotingService {
     /**
      * 注册钩子函数
      * 在消息发送前后起作用
-     * @param hooks 钩子
+     * @param hook 钩子
      */
-    void registerRPCHook(final RPCHook hooks);
+    void registerRPCHook(final RPCHook hook);
 }

@@ -2,6 +2,7 @@ package com.albert.net.remote.netty;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.ObjectUtil;
+import com.albert.net.remote.InvokeCallback;
 import com.albert.net.remote.RPCHook;
 import com.albert.net.remote.common.RemotingUtils;
 import com.albert.net.remote.exception.RemotingTimeoutException;
@@ -250,7 +251,7 @@ public abstract class AbstractNettyRemoting {
         }
     }
 
-    public void invokeAsyncImpl(final Channel channel, final RemotingMessage request, final long timeoutMillis)
+    public void invokeAsyncImpl(final Channel channel, final RemotingMessage request, final long timeoutMillis, InvokeCallback invokeCallback)
             throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException {
         final long beginTimeStamp = System.currentTimeMillis();
         boolean isAcquire = semaphoreAsync.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS);
@@ -260,7 +261,7 @@ public abstract class AbstractNettyRemoting {
                 once.release();
                 throw new RemotingTimeoutException("invokeAsyncImpl timeout exception");
             }
-            final ResponseFuture responseFuture = new ResponseFuture(request.getRequestId(), channel, timeoutMillis, null, null);
+            final ResponseFuture responseFuture = new ResponseFuture(request.getRequestId(), channel, timeoutMillis, invokeCallback, once);
             responseTable.put(request.getRequestId(), responseFuture);
             channel.writeAndFlush(request).addListener(new ChannelFutureListener() {
                 @Override

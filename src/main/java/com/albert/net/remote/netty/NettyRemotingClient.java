@@ -37,6 +37,9 @@ public class NettyRemotingClient extends AbstractNettyRemoting
 
     private final Lock lockChannelTable = new ReentrantLock();
 
+    /**
+     * addr: string; <ip:port>
+     */
     private final ConcurrentHashMap<String /* addr */, ChannelWrapper> channelTable = new ConcurrentHashMap<>();
 
     private final Timer timer = new Timer("CleanResponseTableTimer", true);
@@ -179,16 +182,17 @@ public class NettyRemotingClient extends AbstractNettyRemoting
 
         try {
             if(this.lockChannelTable.tryLock(LOCK_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
-                boolean isCreateNew;
+                boolean isCreateNew = true;
 
                 cw = this.channelTable.get(addr);
-                if(cw.isActive()) {
-                    return cw.getChannel();
-                } else if(cw.getChannelFuture().isDone()) {
-                    isCreateNew = false;
-                } else {
-                    isCreateNew = true;
+                if(cw != null) {
+                    if(cw.isActive()) {
+                        return cw.getChannel();
+                    } else if(cw.getChannelFuture().isDone()) {
+                        isCreateNew = false;
+                    }
                 }
+
                 if(isCreateNew) {
                     ChannelFuture cf = this.bootstrap.connect(RemotingUtils.addrToNetAddress(addr));
                     cw = new ChannelWrapper(cf);
@@ -245,7 +249,8 @@ public class NettyRemotingClient extends AbstractNettyRemoting
                 closeChannel(addr, channel);
                 throw e;
             } catch (RemotingTimeoutException e) {
-                LOGGER.warn("invokeSync send request failed, close the channel {}", addr);
+                LOGGER.warn("invokeSync read timeout exception, close the channel {}", addr);
+                closeChannel(addr, channel);
                 throw e;
             }
         } else {
@@ -265,7 +270,7 @@ public class NettyRemotingClient extends AbstractNettyRemoting
                 if(costTime > timeoutMillis) {
                     throw new RemotingTimeoutException("invokeAsync timeout " + timeoutMillis);
                 }
-                this.invokeAsyncImpl(channel, request, timeoutMillis - costTime);
+                this.invokeAsyncImpl(channel, request, timeoutMillis - costTime, callback);
             } catch (RemotingTimeoutException e) {
                 LOGGER.warn("invokeAsync remoting timeout exception, close the channel {}", addr);
                 closeChannel(addr, channel);
@@ -282,7 +287,7 @@ public class NettyRemotingClient extends AbstractNettyRemoting
     }
 
     @Override
-    public void invokeOneway(String addr, RemotingMessage request, long timeoutMillis, InvokeCallback callback) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException, RemotingConnectException {
+    public void invokeOneway(String addr, RemotingMessage request, long timeoutMillis) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException, RemotingConnectException {
         long beginTimeStamp = System.currentTimeMillis();
         final Channel channel = this.getOrCreateChannel(addr);
         if(channel != null && channel.isActive()) {

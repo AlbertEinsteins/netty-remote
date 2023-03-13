@@ -115,9 +115,9 @@ public class NettyRemotingServer extends AbstractNettyRemoting
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .option(ChannelOption.SO_REUSEADDR, true)
-                .option(ChannelOption.SO_KEEPALIVE, false)
-                .localAddress(1)
+                .localAddress(nettyServerConfig.getListenPort())
                 .childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.SO_KEEPALIVE, false)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
@@ -161,7 +161,7 @@ public class NettyRemotingServer extends AbstractNettyRemoting
     @Override
     public void registerProcessor(int requestCode, RemotingProcessor processor, ExecutorService executor) {
         ExecutorService curExecutor = executor;
-        if(curExecutor != null) {
+        if(curExecutor == null) {
             curExecutor = this.publicExecutor;
         }
         Pair<RemotingProcessor, ExecutorService> servicePair = new Pair<>(processor, curExecutor);

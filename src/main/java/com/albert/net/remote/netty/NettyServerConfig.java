@@ -1,6 +1,8 @@
 package com.albert.net.remote.netty;
 
 public class NettyServerConfig {
+
+    private int listenPort = 7800;
     private int serverWorkerThreads = NettySystemConfig.clientWorkerSize;
     private int serverCallbackExecutorThreads = Runtime.getRuntime().availableProcessors();
     private int serverOnewaySemaphoreValue = NettySystemConfig.semaphoreOneway;
@@ -37,5 +39,13 @@ public class NettyServerConfig {
 
     public void setServerAsyncSemaphoreValue(int serverAsyncSemaphoreValue) {
         this.serverAsyncSemaphoreValue = serverAsyncSemaphoreValue;
+    }
+
+    public int getListenPort() {
+        return listenPort;
+    }
+
+    public void setListenPort(int listenPort) {
+        this.listenPort = listenPort;
     }
 }

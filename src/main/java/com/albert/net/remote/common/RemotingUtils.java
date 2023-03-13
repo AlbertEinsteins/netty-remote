@@ -14,9 +14,13 @@ public class RemotingUtils {
         return remoteAddress;
     }
 
+
     public static InetSocketAddress addrToNetAddress(final String addr) {
-        String ip = "";
-        int port = 0;
+        if(addr == null || addr.split(":").length != 2) {
+            return null;
+        }
+        String ip = addr.split(":")[0];
+        int port = Integer.parseInt(addr.split(":")[1]);
         return InetSocketAddress.createUnresolved(ip, port);
     }
 }

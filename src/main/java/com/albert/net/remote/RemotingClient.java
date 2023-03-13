@@ -37,8 +37,7 @@ public interface RemotingClient extends RemotingService {
      * @param timeoutMillis
      * @param callback
      */
-    void invokeOneway(final String addr, final RemotingMessage request, long timeoutMillis,
-                      InvokeCallback callback) throws RemotingConnectException, InterruptedException, RemotingTimeoutException, RemotingSendRequestException;
+    void invokeOneway(final String addr, final RemotingMessage request, long timeoutMillis) throws RemotingConnectException, InterruptedException, RemotingTimeoutException, RemotingSendRequestException;
 
     void registerProcessor(final int code, final RemotingProcessor processor, ExecutorService executorService);
 

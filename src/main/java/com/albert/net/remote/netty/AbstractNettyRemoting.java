@@ -116,14 +116,17 @@ public abstract class AbstractNettyRemoting {
                         @Override
                         public void operationComplete(RemotingMessage response) {
                             doAfterHooks(addr, msg, response);
-                            response.markResponseType();
-                            response.setRequestId(reqId);
-                            try {
-                                ctx.writeAndFlush(response);
-                            } catch (Throwable e) {
-                                LOGGER.error("write reponse error");
-                                LOGGER.error(msg.toString());
-                                LOGGER.error(response.toString());
+                            if(!msg.isOneWayType()) {
+                                response.markResponseType();
+                                response.setRequestId(reqId);
+                                response.setSerialType(msg.getSerialType());
+                                try {
+                                    ctx.writeAndFlush(response);
+                                } catch (Throwable e) {
+                                    LOGGER.error("method processRequestMessage write response error", e);
+                                    LOGGER.error(msg.toString());
+                                    LOGGER.error(response.toString());
+                                }
                             }
                         }
                     };
@@ -160,7 +163,7 @@ public abstract class AbstractNettyRemoting {
             responseFuture.setResponse(msg);
             responseTable.remove(reqId);
 
-            if(ObjectUtil.isEmpty(responseFuture.getInvokeCallback())) {
+            if(!ObjectUtil.isEmpty(responseFuture.getInvokeCallback())) {
                 executeInvokeCallback(responseFuture);
             } else {
                 responseFuture.putResponse(msg);
@@ -351,7 +354,7 @@ public abstract class AbstractNettyRemoting {
                 responseFuture.release();
                 expiredReqs.add(responseFuture);
                 iter.remove();
-                LOGGER.warn("method scanResponseTable request timeout");
+                LOGGER.warn("method scanResponseTable: a request is timeout, removed");
             }
         }
 

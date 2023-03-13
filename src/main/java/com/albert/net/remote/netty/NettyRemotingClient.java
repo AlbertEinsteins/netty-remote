@@ -8,7 +8,7 @@ import com.albert.net.remote.common.RemotingUtils;
 import com.albert.net.remote.exception.RemotingConnectException;
 import com.albert.net.remote.exception.RemotingTimeoutException;
 import com.albert.net.remote.exception.RemotingSendRequestException;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -229,7 +229,7 @@ public class NettyRemotingClient extends AbstractNettyRemoting
     }
 
     @Override
-    public RemotingMessage invokeSync(String addr, RemotingMessage request, long timeoutMillis)
+    public RemotingCommand invokeSync(String addr, RemotingCommand request, long timeoutMillis)
             throws RemotingConnectException, RemotingTimeoutException, RemotingSendRequestException, InterruptedException {
         long beginTimeStamp = System.currentTimeMillis();
         final Channel channel = this.getOrCreateChannel(addr);
@@ -241,7 +241,7 @@ public class NettyRemotingClient extends AbstractNettyRemoting
                 if(costTime > timeoutMillis) {
                     throw new RemotingTimeoutException("invokeSync timeout " + timeoutMillis);
                 }
-                RemotingMessage response = this.invokeSyncImpl(channel, request, timeoutMillis);
+                RemotingCommand response = this.invokeSyncImpl(channel, request, timeoutMillis);
                 doAfterHooks(addr, request, response);
                 return response;
             } catch (RemotingSendRequestException e) {
@@ -260,7 +260,7 @@ public class NettyRemotingClient extends AbstractNettyRemoting
     }
 
     @Override
-    public void invokeAsync(String addr, RemotingMessage request, long timeoutMillis, InvokeCallback callback) throws RemotingConnectException, RemotingTimeoutException, InterruptedException, RemotingSendRequestException {
+    public void invokeAsync(String addr, RemotingCommand request, long timeoutMillis, InvokeCallback callback) throws RemotingConnectException, RemotingTimeoutException, InterruptedException, RemotingSendRequestException {
         long beginTimeStamp = System.currentTimeMillis();
         final Channel channel = this.getOrCreateChannel(addr);
         if(channel != null && channel.isActive()) {
@@ -287,7 +287,7 @@ public class NettyRemotingClient extends AbstractNettyRemoting
     }
 
     @Override
-    public void invokeOneway(String addr, RemotingMessage request, long timeoutMillis) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException, RemotingConnectException {
+    public void invokeOneway(String addr, RemotingCommand request, long timeoutMillis) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException, RemotingConnectException {
         long beginTimeStamp = System.currentTimeMillis();
         final Channel channel = this.getOrCreateChannel(addr);
         if(channel != null && channel.isActive()) {
@@ -365,9 +365,9 @@ public class NettyRemotingClient extends AbstractNettyRemoting
         }
     }
 
-    class NettyClientHandler extends SimpleChannelInboundHandler<RemotingMessage> {
+    class NettyClientHandler extends SimpleChannelInboundHandler<RemotingCommand> {
         @Override
-        protected void channelRead0(ChannelHandlerContext ctx, RemotingMessage msg) throws Exception {
+        protected void channelRead0(ChannelHandlerContext ctx, RemotingCommand msg) throws Exception {
             processMessage(ctx, msg);
         }
     }

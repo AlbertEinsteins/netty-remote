@@ -4,7 +4,7 @@ import com.albert.net.remote.exception.RemotingConnectException;
 import com.albert.net.remote.exception.RemotingTimeoutException;
 import com.albert.net.remote.exception.RemotingSendRequestException;
 import com.albert.net.remote.netty.RemotingProcessor;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 
 import java.util.concurrent.ExecutorService;
 
@@ -17,7 +17,7 @@ public interface RemotingClient extends RemotingService {
      * @param timeoutMillis
      * @return
      */
-    RemotingMessage invokeSync(final String addr, final RemotingMessage request, long timeoutMillis)
+    RemotingCommand invokeSync(final String addr, final RemotingCommand request, long timeoutMillis)
             throws RemotingConnectException, RemotingTimeoutException, RemotingSendRequestException, InterruptedException;
 
     /**
@@ -27,7 +27,7 @@ public interface RemotingClient extends RemotingService {
      * @param timeoutMillis
      * @param callback
      */
-    void invokeAsync(final String addr, final RemotingMessage request, long timeoutMillis,
+    void invokeAsync(final String addr, final RemotingCommand request, long timeoutMillis,
                      InvokeCallback callback) throws RemotingConnectException, RemotingTimeoutException, InterruptedException, RemotingSendRequestException;
 
     /**
@@ -37,7 +37,7 @@ public interface RemotingClient extends RemotingService {
      * @param timeoutMillis
      * @param callback
      */
-    void invokeOneway(final String addr, final RemotingMessage request, long timeoutMillis) throws RemotingConnectException, InterruptedException, RemotingTimeoutException, RemotingSendRequestException;
+    void invokeOneway(final String addr, final RemotingCommand request, long timeoutMillis) throws RemotingConnectException, InterruptedException, RemotingTimeoutException, RemotingSendRequestException;
 
     void registerProcessor(final int code, final RemotingProcessor processor, ExecutorService executorService);
 

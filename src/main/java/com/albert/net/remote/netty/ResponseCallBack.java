@@ -1,7 +1,7 @@
 package com.albert.net.remote.netty;
 
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 
 public interface ResponseCallBack {
-    void operationComplete(RemotingMessage response);
+    void operationComplete(RemotingCommand response);
 }

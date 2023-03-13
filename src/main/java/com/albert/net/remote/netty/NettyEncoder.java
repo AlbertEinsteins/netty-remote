@@ -1,6 +1,6 @@
 package com.albert.net.remote.netty;
 
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 
 
 @ChannelHandler.Sharable
-public class NettyEncoder extends MessageToByteEncoder<RemotingMessage> {
+public class NettyEncoder extends MessageToByteEncoder<RemotingCommand> {
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyEncoder.class);
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, RemotingMessage msg, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, RemotingCommand msg, ByteBuf out) throws Exception {
         try {
-            byte[] bytes = RemotingMessage.encode(msg);
+            byte[] bytes = RemotingCommand.encode(msg);
             out.writeBytes(bytes);
         } catch (Exception e) {
             LOGGER.error("encode error: ", e);

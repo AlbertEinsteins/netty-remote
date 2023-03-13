@@ -3,7 +3,7 @@ package com.netty.remote;
 import com.albert.net.remote.netty.NettyRemotingServer;
 import com.albert.net.remote.netty.NettyServerConfig;
 import com.albert.net.remote.netty.RemotingProcessor;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.nio.charset.StandardCharsets;
@@ -11,11 +11,11 @@ import java.nio.charset.StandardCharsets;
 public class Server {
     static class MyProcessor implements RemotingProcessor {
         @Override
-        public RemotingMessage process(ChannelHandlerContext ctx, RemotingMessage request) {
+        public RemotingCommand process(ChannelHandlerContext ctx, RemotingCommand request) {
             String receive = new String(request.getBody(), StandardCharsets.UTF_8);
             System.out.println(receive);
 
-            RemotingMessage response = RemotingMessage.createResponse(request.getCode(), "success");
+            RemotingCommand response = RemotingCommand.createResponse(request.getCode(), "success");
             response.setBody(request.getBody());
             return response;
         }

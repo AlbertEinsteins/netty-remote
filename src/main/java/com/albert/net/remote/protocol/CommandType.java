@@ -1,6 +1,6 @@
 package com.albert.net.remote.protocol;
 
-public enum MessageType {
+public enum CommandType {
     REQUEST,
     RESPONSE;
 }

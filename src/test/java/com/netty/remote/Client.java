@@ -1,12 +1,11 @@
 package com.netty.remote;
 
 
-import com.albert.net.remote.InvokeCallback;
 import com.albert.net.remote.exception.RemotingConnectException;
 import com.albert.net.remote.exception.RemotingSendRequestException;
 import com.albert.net.remote.exception.RemotingTimeoutException;
 import com.albert.net.remote.netty.*;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 
 import java.nio.charset.StandardCharsets;
 
@@ -18,7 +17,7 @@ public class Client {
 
         client.start();
 
-        RemotingMessage msg = new RemotingMessage();
+        RemotingCommand msg = new RemotingCommand();
         String body = "123";
         msg.setBody(body.getBytes(StandardCharsets.UTF_8));
 

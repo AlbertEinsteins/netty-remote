@@ -2,7 +2,7 @@ package org.example;
 
 import com.albert.net.remote.netty.NettyDecoder;
 import com.albert.net.remote.netty.NettyEncoder;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -24,7 +24,7 @@ public class CodecTester {
         EmbeddedChannel channel = new EmbeddedChannel(i);
 
         for(int c = 0; c < 3; c++) {
-            RemotingMessage request = RemotingMessage.createRequest(0);
+            RemotingCommand request = RemotingCommand.createRequest(0);
             request.setInfo("test info");
             channel.writeAndFlush(request);
             //打印出站数据
@@ -33,7 +33,7 @@ public class CodecTester {
             System.out.println(out.readableBytes());
             channel.writeInbound(out);
 
-            RemotingMessage in = channel.readInbound();
+            RemotingCommand in = channel.readInbound();
             System.out.println(in);
         }
 

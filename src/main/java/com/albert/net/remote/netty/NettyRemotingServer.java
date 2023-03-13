@@ -6,7 +6,7 @@ import com.albert.net.remote.RPCHook;
 import com.albert.net.remote.RemotingServer;
 import com.albert.net.remote.exception.RemotingSendRequestException;
 import com.albert.net.remote.exception.RemotingTimeoutException;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -179,18 +177,18 @@ public class NettyRemotingServer extends AbstractNettyRemoting
     }
 
     @Override
-    public RemotingMessage invokeSync(Channel channel, RemotingMessage request, long timeoutMillis)
+    public RemotingCommand invokeSync(Channel channel, RemotingCommand request, long timeoutMillis)
             throws InterruptedException, RemotingSendRequestException, RemotingTimeoutException {
         return this.invokeSyncImpl(channel, request, timeoutMillis);
     }
 
     @Override
-    public void invokeAsync(Channel channel, RemotingMessage request, long timeoutMillis, InvokeCallback invokeCallback) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException {
+    public void invokeAsync(Channel channel, RemotingCommand request, long timeoutMillis, InvokeCallback invokeCallback) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException {
         this.invokeAsyncImpl(channel, request, timeoutMillis, invokeCallback);
     }
 
     @Override
-    public void invokeOneway(Channel channel, RemotingMessage request, long timeoutMillis) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException {
+    public void invokeOneway(Channel channel, RemotingCommand request, long timeoutMillis) throws InterruptedException, RemotingTimeoutException, RemotingSendRequestException {
         this.invokeOnewayImpl(channel, request, timeoutMillis);
     }
 
@@ -208,9 +206,9 @@ public class NettyRemotingServer extends AbstractNettyRemoting
     }
 
     @ChannelHandler.Sharable
-    class NettyServerHandler extends SimpleChannelInboundHandler<RemotingMessage> {
+    class NettyServerHandler extends SimpleChannelInboundHandler<RemotingCommand> {
         @Override
-        protected void channelRead0(ChannelHandlerContext ctx, RemotingMessage msg) throws Exception {
+        protected void channelRead0(ChannelHandlerContext ctx, RemotingCommand msg) throws Exception {
             processMessage(ctx, msg);
         }
     }

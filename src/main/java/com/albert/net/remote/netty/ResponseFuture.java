@@ -1,7 +1,7 @@
 package com.albert.net.remote.netty;
 
 import com.albert.net.remote.InvokeCallback;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.channel.Channel;
 
 import java.util.concurrent.CountDownLatch;
@@ -22,7 +22,7 @@ public class ResponseFuture {
 
     private final SemaphoreReleaseOnlyOnce once;
 
-    private volatile RemotingMessage response;
+    private volatile RemotingCommand response;
 
     private Throwable cause;
 
@@ -43,12 +43,12 @@ public class ResponseFuture {
 
 
 
-    public RemotingMessage waitResponse() throws InterruptedException {
+    public RemotingCommand waitResponse() throws InterruptedException {
         this.countDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
         return this.response;
     }
 
-    public void putResponse(RemotingMessage response) {
+    public void putResponse(RemotingCommand response) {
         this.response = response;
         this.countDownLatch.countDown();
     }
@@ -66,7 +66,7 @@ public class ResponseFuture {
         }
     }
 
-    public void setResponse(RemotingMessage response) {
+    public void setResponse(RemotingCommand response) {
         this.response = response;
     }
 

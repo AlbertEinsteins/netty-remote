@@ -1,8 +1,6 @@
 package com.albert.net.remote.protocol;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import io.netty.buffer.ByteBuf;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -15,7 +13,7 @@ public class CustomHeaderSerializer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
 
-    public static byte[] encodeHeader(RemotingMessage msg) {
+    public static byte[] encodeHeader(RemotingCommand msg) {
         // 计算Header 大小
         int headerLen = 0;
         byte[] extBytes = null;
@@ -48,7 +46,7 @@ public class CustomHeaderSerializer {
     }
 
 
-    public static RemotingMessage decodeCustomHeader(final byte[] bytes) {
+    public static RemotingCommand decodeCustomHeader(final byte[] bytes) {
         ByteBuffer buf = ByteBuffer.wrap(bytes);
         int version = buf.getInt();
         int flag = buf.getInt();
@@ -56,7 +54,7 @@ public class CustomHeaderSerializer {
         int code = buf.getInt();
         String info = readStr(buf, true);
 
-        RemotingMessage res = RemotingMessage.createRequest(code);
+        RemotingCommand res = RemotingCommand.createRequest(code);
         res.setVersion(version);
         res.setFlag(flag);
         res.setRequestId(requestId);

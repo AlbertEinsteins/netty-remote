@@ -1,7 +1,7 @@
 package com.albert.net.remote.netty;
 
 import com.albert.net.remote.common.RemotingUtils;
-import com.albert.net.remote.protocol.RemotingMessage;
+import com.albert.net.remote.protocol.RemotingCommand;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -24,7 +24,7 @@ public class NettyDecoder extends LengthFieldBasedFrameDecoder {
             if(frame == null) {
                 return null;
             }
-            return RemotingMessage.decode(frame);
+            return RemotingCommand.decode(frame);
         } catch (Exception e) {
             LOGGER.error("decode exception " + RemotingUtils.parseRemoteAddress(ctx.channel()), e);
             ctx.close();
